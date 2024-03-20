@@ -2,8 +2,11 @@
 <body>
 <div id="unique"></div>
 <script type="application/javascript">
-    const uniqueDiv = document.getElementById("unique")
-    uniqueDiv.innerHTML = "<h1>Awesome</h1>"
+    const uniqueDiv = document.getElementById("unique");
+    const headerOne = document.createElement('h1');
+    const textNode = document.createTextNode('"Great things coming"')
+    headerOne.append(textNode)
+    uniqueDiv.append(headerOne)
 </script>
 </body>
 </html>
