@@ -1,20 +1,24 @@
 package main
 
 import (
-	"github.com/go-chi/chi/v5"
+	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/cors"
+	"github.com/gofiber/fiber/v3/middleware/recover"
 	"github.com/joho/godotenv"
 	"github.com/kashyab12/habere/handlers"
 	"os"
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
+	if loadEnvErr := godotenv.Load(); loadEnvErr != nil {
 		return
 	}
-	appRouter := chi.NewRouter()
-	apiRouter := chi.NewRouter()
 	apiConfig := handlers.ApiConfig{ClientID: os.Getenv("CLIENT_ID")}
-	apiRouter.Get("/ttAuth", apiConfig.GetTTAuthHandler)
-	appRouter.Mount("/api", apiRouter)
+	app := fiber.New()
+	app.Use(cors.New())
+	app.Use(recover.New())
+	app.Get("/ttAuth", apiConfig.GetTTAuthHandler)
+	if listenError := app.Listen(":8992"); listenError != nil {
+		return
+	}
 }
