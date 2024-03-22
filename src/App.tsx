@@ -1,7 +1,6 @@
 import './App.css'
 import LoginWithTickTick from "./Login.tsx";
 
-const TT_REDIRECT = "https://ticktick.com/oauth/authorize";
 
 function App() {
     return (
