@@ -1,11 +1,6 @@
-const DEFAULT_REDIRECT = "https://google.com"
-const TICKTICK_LOGIN = "https://ticktick.com/"
+import './App.css'
 
-function LoginWithTickTick() {
-    return (
-        <LoginButton title={TICKTICK_LOGIN} buttonInfo="Login with TickTick"/>
-    )
-}
+const DEFAULT_REDIRECT = "https://google.com"
 
 function LoginButton({link, buttonInfo}) {
     return (
@@ -16,6 +11,12 @@ function LoginButton({link, buttonInfo}) {
                 </button>
             </a>
         </>
+    )
+}
+
+function LoginWithTickTick({redirectURI}) {
+    return (
+        <LoginButton link={redirectURI} buttonInfo="Login with TickTick"/>
     )
 }
 
