@@ -1,23 +1,36 @@
 import './App.css'
+import {constants} from './constants.ts'
 
-const DEFAULT_REDIRECT = "https://google.com"
 
-function LoginButton({link, buttonInfo}) {
+function LoginButton({onClickFunc, buttonInfo}) {
     return (
         <>
-            <a href={link? link: DEFAULT_REDIRECT} target="_blank">
-                <button>
-                    {buttonInfo}
-                </button>
-            </a>
+            <button onClick={redirectOnClickHandler}>
+                {buttonInfo}
+            </button>
         </>
     )
 }
 
-function LoginWithTickTick({redirectURI}) {
+function LoginWithTickTick() {
     return (
-        <LoginButton link={redirectURI} buttonInfo="Login with TickTick"/>
+        <LoginButton onClick={redirectOnClickHandler} buttonInfo="Login with TickTick"/>
     )
+}
+
+const redirectOnClickHandler = async () => {
+    try {
+        const getRedirectResponse = await fetch(constants.BACKEND_TT_REDIR_EP)
+        if (!getRedirectResponse.redirected) {
+            console.log("received invalid response, toast with error")
+        } else if (getRedirectResponse.headers.get("Location") != null) {
+            window.open(getRedirectResponse.headers.get("Location"), '_blank')
+        } else {
+            console.log("received invalid response, toast with error")
+        }
+    } catch (e) {
+        console.log("received invalid response, toast with error")
+    }
 }
 
 export default LoginWithTickTick
