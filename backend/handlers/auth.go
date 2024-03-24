@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"github.com/gofiber/fiber/v3"
 	"net/url"
 )
@@ -35,7 +34,6 @@ func (config *ApiConfig) GetTTAuthHandler(c fiber.Ctx) error {
 		queryParams.Add("redirect_uri", authorizeParams.RedirectURI)
 		queryParams.Add("response_type", authorizeParams.ResponseType)
 		authUrl.RawQuery = queryParams.Encode()
-		fmt.Printf("Encoded URL is %v\n", authUrl.String())
 		return c.Redirect().Status(fiber.StatusOK).To(authUrl.String())
 	}
 }
