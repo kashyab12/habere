@@ -20,11 +20,13 @@ function LoginWithTickTick() {
 
 const redirectOnClickHandler = async () => {
     try {
-        // const corsHeader = getBackendCorsHeaders()
-        const getRedirectResponse = await fetch(constants.BACKEND_TT_REDIR_EP, {
+        const corsHeader: HeadersInit = new Headers()
+        const fetchOptions: RequestInit = {
             method: "GET",
             mode: "cors",
-        })
+            credentials: "include"
+        }
+        const getRedirectResponse = await fetch(constants.BACKEND_TT_REDIR_EP, fetchOptions)
         if (!getRedirectResponse.redirected) {
             console.log("received invalid response, toast with error")
         } else if (getRedirectResponse.headers.get("Location") != null) {
