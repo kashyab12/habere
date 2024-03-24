@@ -1,5 +1,6 @@
 package handlers
 
 type ApiConfig struct {
-	ClientID string
+	ClientID     string
+	ClientSecret string
 }
