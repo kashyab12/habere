@@ -1,6 +1,6 @@
 import './App.css'
 import {constants} from './constants.ts'
-
+import {getBackendCorsHeaders} from "./Login";
 
 function LoginButton({onClickFunc, buttonInfo}) {
     return (
@@ -20,7 +20,11 @@ function LoginWithTickTick() {
 
 const redirectOnClickHandler = async () => {
     try {
-        const getRedirectResponse = await fetch(constants.BACKEND_TT_REDIR_EP)
+        // const corsHeader = getBackendCorsHeaders()
+        const getRedirectResponse = await fetch(constants.BACKEND_TT_REDIR_EP, {
+            method: "GET",
+            mode: "cors",
+        })
         if (!getRedirectResponse.redirected) {
             console.log("received invalid response, toast with error")
         } else if (getRedirectResponse.headers.get("Location") != null) {
@@ -29,7 +33,7 @@ const redirectOnClickHandler = async () => {
             console.log("received invalid response, toast with error")
         }
     } catch (e) {
-        console.log("received invalid response, toast with error")
+        console.log(e)
     }
 }
 
