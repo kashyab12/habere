@@ -1,6 +1,5 @@
 import './App.css'
 import {constants} from './constants.ts'
-import {getBackendCorsHeaders} from "./Login";
 
 function LoginButton({onClickFunc, buttonInfo}) {
     return (
