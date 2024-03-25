@@ -12,9 +12,14 @@ func main() {
 	if loadEnvErr := godotenv.Load(); loadEnvErr != nil {
 		return
 	}
-	apiConfig := handlers.ApiConfig{ClientID: os.Getenv("TT_CLIENT_ID"), ClientSecret: os.Getenv("TT_CLIENT_SECRET")}
+	const FrontendUrl = "http://localhost:5173"
+
 	app := echo.New()
-	app.Use(middleware.CORS())
+	apiConfig := handlers.ApiConfig{ClientID: os.Getenv("TT_CLIENT_ID"), ClientSecret: os.Getenv("TT_CLIENT_SECRET")}
+	app.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins:     []string{FrontendUrl},
+		AllowCredentials: true,
+	}))
 	app.Use(middleware.Logger())
 	app.GET("/ttScopeVerify", apiConfig.GetTTScopeVerification)
 	app.Any("/ttAuth", apiConfig.GetTTAuthorize)

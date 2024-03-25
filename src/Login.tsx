@@ -27,10 +27,9 @@ const redirectOnClickHandler = async () => {
             credentials: "include"
         }
         const getRedirectResponse = await fetch(constants.BACKEND_TT_REDIR_EP, fetchOptions)
-        if (!getRedirectResponse.redirected) {
-            console.log("received invalid response, toast with error")
-        } else if (getRedirectResponse.headers.get("Location") != null) {
-            window.open(getRedirectResponse.headers.get("Location"), '_blank')
+        const jsonBody = await getRedirectResponse.json()
+        if (jsonBody?.url) {
+            window.open(jsonBody.url, '_blank')
         } else {
             console.log("received invalid response, toast with error")
         }

@@ -14,12 +14,12 @@ type TTAuthorizeParams struct {
 	ResponseType string
 }
 
-// GetTTAuthHandler requires client_id, scope, state, redirect_uri, and response_type
-func (config *ApiConfig) GetTTAuthHandler(c echo.Context) error {
+// GetTTScopeVerification requires client_id, scope, state, redirect_uri, and response_type
+func (config *ApiConfig) GetTTScopeVerification(c echo.Context) error {
 	const (
 		ttAuthURL   = "https://ticktick.com/oauth/authorize"
 		ttTokenURL  = "https://ticktick.com/oauth/token"
-		redirectURL = "http://localhost:5173"
+		redirectURL = "http://localhost:8080/ttAuth"
 	)
 	authConf := &oauth2.Config{
 		ClientID:     config.ClientID,
@@ -32,6 +32,14 @@ func (config *ApiConfig) GetTTAuthHandler(c echo.Context) error {
 		Scopes:      []string{"tasks:write", "tasks:read"},
 	}
 	verifier := oauth2.GenerateVerifier()
-	url := authConf.AuthCodeURL("state", oauth2.AccessTypeOffline, oauth2.S256ChallengeOption(verifier))
-	return c.Redirect(http.StatusOK, url)
+	scopeVerifyURL := authConf.AuthCodeURL("state", oauth2.AccessTypeOffline, oauth2.S256ChallengeOption(verifier))
+	return c.JSON(http.StatusOK, echo.Map{
+		"url": scopeVerifyURL,
+	})
+}
+
+func (config *ApiConfig) GetTTAuthorize(c echo.Context) error {
+	return c.JSON(http.StatusOK, echo.Map{
+		"error": "None",
+	})
 }
