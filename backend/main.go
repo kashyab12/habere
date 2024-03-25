@@ -1,8 +1,10 @@
 package main
 
 import (
+	"github.com/gorilla/sessions"
 	"github.com/joho/godotenv"
 	"github.com/kashyab12/habere/handlers"
+	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"os"
@@ -21,6 +23,7 @@ func main() {
 		AllowCredentials: true,
 	}))
 	app.Use(middleware.Logger())
+	app.Use(session.Middleware(sessions.NewCookieStore([]byte(os.Getenv("SESSION_STORE_SECRET")))))
 	app.GET("/ttScopeVerify", apiConfig.GetTTScopeVerification)
 	app.Any("/ttAuth", apiConfig.GetTTAuthorize)
 	app.Logger.Fatal(app.Start(":8080"))
