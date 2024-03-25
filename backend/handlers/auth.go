@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"encoding/gob"
+	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"golang.org/x/oauth2"
@@ -24,6 +26,10 @@ func (config *ApiConfig) GetTTScopeVerification(c echo.Context) error {
 		DayInSeconds = 86400
 	)
 	authSession, _ := session.Get("tt-authentication", c)
+	authSession.Options = &sessions.Options{
+		MaxAge:   DayInSeconds,
+		HttpOnly: true,
+	}
 	authConf := &oauth2.Config{
 		ClientID:     config.ClientID,
 		ClientSecret: config.ClientSecret,
@@ -36,9 +42,16 @@ func (config *ApiConfig) GetTTScopeVerification(c echo.Context) error {
 	}
 	verifier := oauth2.GenerateVerifier()
 	scopeVerifyURL := authConf.AuthCodeURL("state", oauth2.AccessTypeOffline, oauth2.S256ChallengeOption(verifier))
-	authSession.Values["oauth2Config"] = authConf
+	gob.Register(oauth2.Config{})
+	authSession.Values["oauth2Config"] = *authConf
 	authSession.Values["verifier"] = verifier
-	_ = authSession.Save(c.Request(), c.Response())
+	authSession.Values["frontendURL"] = c.Response().Header().Get("Origin")
+	saveErr := authSession.Save(c.Request(), c.Response())
+	if saveErr != nil {
+		return c.JSON(http.StatusInternalServerError, echo.Map{
+			"error": "Could not save the session cookie to the response.",
+		})
+	}
 	return c.JSON(http.StatusOK, echo.Map{
 		"url": scopeVerifyURL,
 	})
@@ -68,9 +81,25 @@ func (config *ApiConfig) GetTTAuthorize(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"error": tokenError.Error(),
 		})
+	} else if frontendURLIf, isURLExists := authSession.Values["frontendURL"]; !isURLExists {
+		return c.JSON(http.StatusInternalServerError, echo.Map{
+			"error": "could not find frontend url",
+		})
+	} else if frontendURL, isCastedURLToStr := frontendURLIf.(string); !isCastedURLToStr {
+		return c.JSON(http.StatusInternalServerError, echo.Map{
+			"error": "could not frontendURL var to string",
+		})
 	} else {
-		authSession.Values["token"] = token
+		gob.Register(oauth2.Token{})
+		authSession.Values["token"] = *token
 		authSession.Values["state"] = state
-		return c.NoContent(http.StatusOK)
+		saveErr := authSession.Save(c.Request(), c.Response())
+		if saveErr != nil {
+			return c.JSON(http.StatusInternalServerError, echo.Map{
+				"error": "Could not save the session cookie to the response.",
+			})
+		} else {
+			return c.Redirect(http.StatusFound, frontendURL)
+		}
 	}
 }
