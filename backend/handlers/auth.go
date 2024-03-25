@@ -39,7 +39,10 @@ func (config *ApiConfig) GetTTScopeVerification(c echo.Context) error {
 }
 
 func (config *ApiConfig) GetTTAuthorize(c echo.Context) error {
+	authorizationCode := c.QueryParam("code")
+	state := c.QueryParam("state")
 	return c.JSON(http.StatusOK, echo.Map{
-		"error": "None",
+		"authCode": authorizationCode,
+		"state":    state,
 	})
 }
