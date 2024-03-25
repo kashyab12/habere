@@ -7,7 +7,7 @@ function App() {
         <>
             <h1>habere</h1>
             <div className="card">
-                <LoginWithTickTick />
+                <LoginWithTickTick buttonInfo={"Login with TickTick"}/>
                 <p>
                     Click the above to authenticate with TickTick.
                 </p>
