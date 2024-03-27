@@ -85,7 +85,7 @@ func (config *ApiConfig) GetTTAuthorize(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"error": "could not find frontend url",
 		})
-	} else if frontendURL, isCastedURLToStr := frontendURLIf.(string); !isCastedURLToStr {
+	} else if _, isCastedURLToStr := frontendURLIf.(string); !isCastedURLToStr {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"error": "could not frontendURL var to string",
 		})
@@ -99,7 +99,7 @@ func (config *ApiConfig) GetTTAuthorize(c echo.Context) error {
 				"error": "Could not save the session cookie to the response.",
 			})
 		} else {
-			return c.Redirect(http.StatusFound, frontendURL)
+			return c.NoContent(http.StatusOK)
 		}
 	}
 }
