@@ -2,15 +2,10 @@ import './App.css'
 import {constants} from './constants.ts'
 import {useRef} from "react";
 
-function LoginButton({onClickFunc, buttonInfo}) {
-
-
-}
 
 function LoginWithTickTick({buttonInfo}) {
     const onClickHandler = async () =>  {
         try {
-            const corsHeader: HeadersInit = new Headers()
             const fetchOptions: RequestInit = {
                 method: "GET",
                 mode: "cors",
