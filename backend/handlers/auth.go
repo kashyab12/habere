@@ -29,6 +29,7 @@ func (config *ApiConfig) GetTTScopeVerification(c echo.Context) error {
 	authSession.Options = &sessions.Options{
 		MaxAge:   DayInSeconds,
 		HttpOnly: true,
+		Secure:   true,
 	}
 	authConf := &oauth2.Config{
 		ClientID:     config.ClientID,
