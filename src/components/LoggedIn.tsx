@@ -1,4 +1,3 @@
-import LoginWithTickTick from "./Login";
 
 function LoggedIn() {
     return (
