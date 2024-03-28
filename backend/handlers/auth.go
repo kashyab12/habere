@@ -58,6 +58,7 @@ func (config *ApiConfig) GetTTScopeVerification(c echo.Context) error {
 }
 
 func (config *ApiConfig) GetTTAuthorize(c echo.Context) error {
+	const FrontendRedirect = "http://localhost:5173/logind"
 	authorizationCode := c.QueryParam("code")
 	state := c.QueryParam("state")
 	authSession, _ := session.Get("tt-authentication", c)
@@ -99,7 +100,7 @@ func (config *ApiConfig) GetTTAuthorize(c echo.Context) error {
 				"error": "Could not save the session cookie to the response.",
 			})
 		} else {
-			return c.NoContent(http.StatusOK)
+			return c.Redirect(http.StatusFound, FrontendRedirect)
 		}
 	}
 }
