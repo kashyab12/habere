@@ -1,15 +1,12 @@
-import './App.css'
-import LoginWithTickTick from "./Login.tsx";
+import LoginWithTickTick from "./Login";
 
-
-function App() {
+function LoggedIn() {
     return (
         <>
             <h1>habere</h1>
             <div className="card">
-                <LoginWithTickTick buttonInfo={"Login with TickTick"}/>
                 <p>
-                    Click the above to authenticate with TickTick.
+                   Logged in!
                 </p>
             </div>
             <p className="read-the-docs">
@@ -19,4 +16,4 @@ function App() {
     )
 }
 
-export default App
+export default LoggedIn
