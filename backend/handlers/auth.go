@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/gob"
+	"fmt"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
@@ -103,5 +104,24 @@ func (config *ApiConfig) GetTTAuthorize(c echo.Context) error {
 		} else {
 			return c.Redirect(http.StatusFound, FrontendRedirect)
 		}
+	}
+}
+
+func AddAuthorizationHeader(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		authCookie, getAuthCookieErr := session.Get("tt-authentication", c)
+		if getAuthCookieErr != nil {
+			// User is not authed
+			c.Request().Header.Set("Authorization", "")
+		} else if tokenIf, isTokenExists := authCookie.Values["token"]; !isTokenExists {
+			// User is not authed
+			c.Request().Header.Set("Authorization", "")
+		} else if token, isCastedToStrErr := tokenIf.(string); !isCastedToStrErr {
+			// Casting Error, invalid token?
+			c.Request().Header.Set("Authorization", "")
+		} else {
+			c.Request().Header.Set("Authorization", fmt.Sprintf("Bearer %v", token))
+		}
+		return next(c)
 	}
 }
