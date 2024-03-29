@@ -8,6 +8,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"golang.org/x/oauth2"
 	"net/http"
+	"strings"
 )
 
 type TTAuthorizeParams struct {
@@ -104,6 +105,15 @@ func (config *ApiConfig) GetTTAuthorize(c echo.Context) error {
 		} else {
 			return c.Redirect(http.StatusFound, FrontendRedirect)
 		}
+	}
+}
+
+// GetIsValidTTSession should pass through AddAuthorizationHeader middleware
+func (config *ApiConfig) GetIsValidTTSession(c echo.Context) error {
+	if strings.Contains(c.Request().Header.Get("Authorization"), "Bearer") {
+		return c.NoContent(http.StatusOK)
+	} else {
+		return c.NoContent(http.StatusUnauthorized)
 	}
 }
 

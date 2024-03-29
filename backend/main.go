@@ -26,5 +26,6 @@ func main() {
 	app.Use(session.Middleware(sessions.NewCookieStore([]byte(os.Getenv("SESSION_STORE_SECRET")))))
 	app.GET("/ttScopeVerify", apiConfig.GetTTScopeVerification)
 	app.GET("/ttAuth", apiConfig.GetTTAuthorize)
+	app.GET("/isValidTTSession", apiConfig.GetIsValidTTSession, handlers.AddAuthorizationHeader)
 	app.Logger.Fatal(app.Start(":8080"))
 }
