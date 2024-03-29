@@ -126,11 +126,11 @@ func AddAuthorizationHeader(next echo.HandlerFunc) echo.HandlerFunc {
 		} else if tokenIf, isTokenExists := authCookie.Values["token"]; !isTokenExists {
 			// User is not authed
 			c.Request().Header.Set("Authorization", "")
-		} else if token, isCastedToStrErr := tokenIf.(string); !isCastedToStrErr {
+		} else if token, isCastedToStrErr := tokenIf.(oauth2.Token); !isCastedToStrErr {
 			// Casting Error, invalid token?
 			c.Request().Header.Set("Authorization", "")
 		} else {
-			c.Request().Header.Set("Authorization", fmt.Sprintf("Bearer %v", token))
+			c.Request().Header.Set("Authorization", fmt.Sprintf("Bearer %v", token.AccessToken))
 		}
 		return next(c)
 	}
