@@ -1,7 +1,6 @@
 import '../App.css'
 import LoginWithTickTick from "./Login.tsx";
 
-
 function App() {
     return (
         <>
