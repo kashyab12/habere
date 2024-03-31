@@ -1,6 +1,5 @@
 import '../App.css'
 import {constants} from '../constants.ts'
-// import {useRef} from "react";
 
 
 function LoginWithTickTick({buttonInfo}: {buttonInfo: string}) {
