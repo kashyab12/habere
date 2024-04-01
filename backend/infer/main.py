@@ -9,7 +9,7 @@ if not is_loaded:
 api_key = os.getenv("ANTHROPIC_API_KEY")
 client = anthropic.Anthropic(api_key=api_key)
 msg = {
-    "content": "I am trying to lose weight",
+    "content": "Lose weight by the end of the year",
     "role": "user"
 }
 
@@ -20,7 +20,8 @@ system_prompt = (
     f"You need to make sure your boss accomplishes their goals. Given a set of goals, order them based on their "
     f"impact and give a step by step plan of what needs to be done to accomplish the goal by the given deadline. "
     f"This step by step plan should include deadlines as well, and depending on the deadline make the goals on a weekly "
-    f"or monthly manner. Present the plan in a JSON format."
+    f"or monthly manner. Make sure the plan follows the S.M.A.R.T system to some extent, mainly try to make "
+    f"the action items quantifiable so that it encourages confidence on achievement. Present the plan in a JSON format."
 )
 
 message = client.messages.create(
