@@ -7,6 +7,7 @@ import (
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"net/http"
 	"os"
 )
 
@@ -17,7 +18,7 @@ func main() {
 	const FrontendUrl = "http://localhost:5173"
 
 	app := echo.New()
-	apiConfig := handlers.ApiConfig{ClientID: os.Getenv("TT_CLIENT_ID"), ClientSecret: os.Getenv("TT_CLIENT_SECRET")}
+	apiConfig := handlers.ApiConfig{ClientID: os.Getenv("TT_CLIENT_ID"), ClientSecret: os.Getenv("TT_CLIENT_SECRET"), HttpClient: &http.Client{}}
 	app.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins:     []string{FrontendUrl},
 		AllowCredentials: true,
@@ -27,5 +28,6 @@ func main() {
 	app.GET("/ttScopeVerify", apiConfig.GetTTScopeVerification)
 	app.GET("/ttAuth", apiConfig.GetTTAuthorize)
 	app.GET("/isValidTTSession", apiConfig.GetIsValidTTSession, handlers.AddAuthorizationHeader)
+	app.GET("/todaysTasks", apiConfig.GetTodaysTasksTT, handlers.AddAuthorizationHeader)
 	app.Logger.Fatal(app.Start(":8080"))
 }
