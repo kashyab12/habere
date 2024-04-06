@@ -12,7 +12,7 @@ export function Dashboard() {
                     <div className="grid gap-2 text-center">
                         <h1 className="text-3xl font-bold">Login</h1>
                         <p className="text-balance text-muted-foreground">
-                           The magic of auto-prioritized tasks with Habere.
+                           Prioritize the important things in life.
                         </p>
                     </div>
                     <div className="grid gap-4">
@@ -25,7 +25,7 @@ export function Dashboard() {
             <div className="hidden bg-muted lg:block">
                 <Image
                     src={haberePic}
-                    alt="Image"
+                    alt="Prioritize the important things in life"
                     className="h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
                 />
             </div>
