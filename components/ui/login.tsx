@@ -4,6 +4,8 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import haberePic from '@/public/habere.jpeg'
 
+
+
 export function Dashboard() {
     return (
         <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
@@ -16,9 +18,11 @@ export function Dashboard() {
                         </p>
                     </div>
                     <div className="grid gap-4">
+                        <Link href="/api/auth">
                         <Button variant="outline" className="w-full">
                             Login with TickTick
                         </Button>
+                        </Link>
                     </div>
                 </div>
             </div>
