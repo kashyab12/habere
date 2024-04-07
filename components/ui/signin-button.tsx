@@ -1,12 +1,12 @@
-"use client";
-
-import {Button} from "@/components/ui/button";
-import {signIn} from "next-auth/react"
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function SignInButton() {
     return (
-        <Button variant="outline" className="w-full" onClick={() => signIn("ticktick")}>
-            Login with TickTick
-        </Button>
+        <Link href="/api/auth/signin/ticktick">
+            <Button variant="outline" className="w-full">
+                Login with TickTick
+            </Button>
+        </Link>
     )
 }
