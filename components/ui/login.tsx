@@ -3,6 +3,7 @@ import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
 import haberePic from '@/public/habere.jpeg'
+import SignInButton from "@/components/ui/signin-button";
 
 export function Dashboard() {
     return (
@@ -16,9 +17,7 @@ export function Dashboard() {
                         </p>
                     </div>
                     <div className="grid gap-4">
-                        <Button variant="outline" className="w-full">
-                            Login with TickTick
-                        </Button>
+                        <SignInButton/>
                     </div>
                 </div>
             </div>
