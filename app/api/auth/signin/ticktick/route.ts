@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ttClient } from "@/lib/auth"
 import { generateState } from "oslo/oauth2";
+import { cookies } from "next/headers";
 
 export async function GET(req: NextRequest) {
     const state = generateState()
@@ -8,5 +9,10 @@ export async function GET(req: NextRequest) {
         state,
         scopes: ["tasks:write", "tasks:read"]
     })
-    return NextResponse.redirect(url)
+    const response = NextResponse.redirect(url, {
+        'status': 302
+    })
+    // Session cookie or nah?
+    response.cookies.set("ticktick-oauth-state", state)
+    return response
 }
