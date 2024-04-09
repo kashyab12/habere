@@ -64,27 +64,23 @@ async function getTodaysTasks(authHeader: string): Promise<Task[]> {
             throw new Error(`Received ${getUsersProjectsResp.status} code while fetching user's project.\nResponse JSON: ${projectsJSON}`)
         } else {
             // For each project obtain the tasks
-            (projectsJSON as Project[]).forEach(async project => {
-                try {
-                    // Get specific project data
-                    const projectDataResp = await fetch(`${TickTickAPI.getAllProjects}/${project.id}/data`, {
-                        headers: {
-                            "Authorization": authHeader
+            for (const project of projectsJSON as Project[]) {
+                // Get specific project data
+                const projectDataResp = await fetch(`${TickTickAPI.getAllProjects}/${project.id}/data`, {
+                    headers: {
+                        "Authorization": authHeader
+                    }
+                })
+                const projectDataJSON: ProjectData = await projectDataResp.json()
+                for (const task of projectDataJSON.tasks) {
+                    if (task?.dueDate) {
+                        const taskDueDate = new Date(task.dueDate)
+                        if (isToday(taskDueDate)) {
+                            todaysTasks.push(task)
                         }
-                    })
-                    const projectDataJSON: ProjectData = await projectDataResp.json()
-                    projectDataJSON.tasks.forEach(task => {
-                        if (task?.dueDate) {
-                            const taskDueDate = new Date(task.dueDate)
-                            if (isToday(taskDueDate)) {
-                                todaysTasks.push(task)
-                            }
-                        }
-                    })
-                } catch (fetchTasksErr) {
-                    throw fetchTasksErr
+                    }
                 }
-            })
+            }
             return todaysTasks
         }
     } catch (fetchProjectsErr) {
@@ -95,8 +91,8 @@ async function getTodaysTasks(authHeader: string): Promise<Task[]> {
 const isToday = (someDate: Date) => {
     const today = new Date()
     return someDate.getDate() == today.getDate() &&
-      someDate.getMonth() == today.getMonth() &&
-      someDate.getFullYear() == today.getFullYear()
-  }
+        someDate.getMonth() == today.getMonth() &&
+        someDate.getFullYear() == today.getFullYear()
+}
 
 export default getTodaysTasks
