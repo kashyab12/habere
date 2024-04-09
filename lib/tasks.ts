@@ -51,10 +51,14 @@ interface ProjectData {
 }
 
 
-async function getTodaysTasks() {
+async function getTodaysTasks(authHeader: string): Promise<Task[]> {
     try {
         const todaysTasks: Task[] = []
-        const getUsersProjectsResp = await fetch(TickTickAPI.getAllProjects)
+        const getUsersProjectsResp = await fetch(TickTickAPI.getAllProjects, {
+            headers: {
+                "Authorization": authHeader
+            }
+        })
         const projectsJSON = await getUsersProjectsResp.json()
         if (getUsersProjectsResp.status != 200) {
             throw new Error(`Received ${getUsersProjectsResp.status} code while fetching user's project.\nResponse JSON: ${projectsJSON}`)
@@ -63,7 +67,11 @@ async function getTodaysTasks() {
             (projectsJSON as Project[]).forEach(async project => {
                 try {
                     // Get specific project data
-                    const projectDataResp = await fetch(`${TickTickAPI.getAllProjects}/${project.id}/data`)
+                    const projectDataResp = await fetch(`${TickTickAPI.getAllProjects}/${project.id}/data`, {
+                        headers: {
+                            "Authorization": authHeader
+                        }
+                    })
                     const projectDataJSON: ProjectData = await projectDataResp.json()
                     projectDataJSON.tasks.forEach(task => {
                         if (task?.dueDate) {
@@ -73,12 +81,11 @@ async function getTodaysTasks() {
                             }
                         }
                     })
-
                 } catch (fetchTasksErr) {
                     throw fetchTasksErr
                 }
-
             })
+            return todaysTasks
         }
     } catch (fetchProjectsErr) {
         throw fetchProjectsErr
