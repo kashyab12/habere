@@ -23,6 +23,10 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL('/', request.url))
     } else {
         const authHeader = `Bearer ${session.accessToken}`
-        return NextResponse.next().headers.set('Authorization', authHeader)
+        const response = NextResponse.next({
+            request: request
+        })
+        response.headers.set('Authorization', authHeader)
+        return response
     }
 } 
