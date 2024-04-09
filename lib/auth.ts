@@ -1,4 +1,4 @@
-import { SessionOptions, getIronSession } from "iron-session";
+import { SessionOptions } from "iron-session";
 import { OAuth2Client } from "oslo/oauth2";
 
 const authorizeEndpoint = "https://ticktick.com/oauth/authorize"
