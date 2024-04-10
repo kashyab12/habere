@@ -1,8 +1,8 @@
 import { Dashboard } from "@/components/ui/login";
 import SignInContent from "@/components/ui/signin-content";
-import TaskCards from "@/components/ui/task-cards";
-import getTodaysTasks from "@/lib/tasks";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+
 
 async function Home() {
   const authHeader = headers().get("Authorization")  
@@ -11,11 +11,7 @@ async function Home() {
       <Dashboard children={<SignInContent />} />
     );
   } else {
-    const todaysTasks = await getTodaysTasks(authHeader)
-    console.log(todaysTasks)
-    return (
-      <Dashboard children={<TaskCards />} />
-    )
+    redirect("/prioritize")
   }
 }
 
