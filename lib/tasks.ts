@@ -57,6 +57,9 @@ async function getTodaysTasks(authHeader: string): Promise<Task[]> {
         const getUsersProjectsResp = await fetch(TickTickAPI.getAllProjects, {
             headers: {
                 "Authorization": authHeader
+            }, 
+            next: {
+                revalidate: 3600
             }
         })
         const projectsJSON = await getUsersProjectsResp.json()
@@ -69,6 +72,9 @@ async function getTodaysTasks(authHeader: string): Promise<Task[]> {
                 const projectDataResp = await fetch(`${TickTickAPI.getAllProjects}/${project.id}/data`, {
                     headers: {
                         "Authorization": authHeader
+                    },
+                    next: {
+                        revalidate: 3600
                     }
                 })
                 const projectDataJSON: ProjectData = await projectDataResp.json()
