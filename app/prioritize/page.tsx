@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import inferPriAndRe from "@/lib/model";
 
 interface DisplayTask {
   title: string
@@ -26,6 +27,9 @@ async function TaskPriorities() {
   } else {
     const todaysTasks = await getTodaysTasks(authHeader)
     console.log(todaysTasks)
+    const inferObj = await inferPriAndRe(todaysTasks)
+    const inferResp = inferObj.choices?.[0]?.message?.content
+    console.log(inferResp)
     return (
       < Table >
         <TableCaption>Today's tasks!</TableCaption>
