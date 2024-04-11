@@ -50,18 +50,35 @@ interface ProjectData {
     tasks: Task[]
 }
 
+async function getProjectsReq(authHeader: string) {
+    const getUsersProjectsResp = fetch(TickTickAPI.getAllProjects, {
+        headers: {
+            "Authorization": authHeader
+        }, 
+        next: {
+            revalidate: 3600
+        }
+    })
+    return getUsersProjectsResp
+}
+
+async function getTodaysTasksReq(projectID: string, authHeader: string) {
+    const projectDataResp = fetch(`${TickTickAPI.getAllProjects}/${projectID}/data`, {
+        headers: {
+            "Authorization": authHeader
+        },
+        next: {
+            revalidate: 3600
+        }
+    })
+    return projectDataResp
+}
+
 
 async function getTodaysTasks(authHeader: string): Promise<Task[]> {
     try {
         const todaysTasks: Task[] = []
-        const getUsersProjectsResp = await fetch(TickTickAPI.getAllProjects, {
-            headers: {
-                "Authorization": authHeader
-            }, 
-            next: {
-                revalidate: 3600
-            }
-        })
+        const getUsersProjectsResp = await getProjectsReq(authHeader)
         const projectsJSON = await getUsersProjectsResp.json()
         if (getUsersProjectsResp.status != 200) {
             throw new Error(`Received ${getUsersProjectsResp.status} code while fetching user's project.\nResponse JSON: ${projectsJSON}`)
@@ -69,14 +86,7 @@ async function getTodaysTasks(authHeader: string): Promise<Task[]> {
             // For each project obtain the tasks
             for (const project of projectsJSON as Project[]) {
                 // Get specific project data
-                const projectDataResp = await fetch(`${TickTickAPI.getAllProjects}/${project.id}/data`, {
-                    headers: {
-                        "Authorization": authHeader
-                    },
-                    next: {
-                        revalidate: 3600
-                    }
-                })
+                const projectDataResp = await getTodaysTasksReq(project.id, authHeader)
                 const projectDataJSON: ProjectData = await projectDataResp.json()
                 for (const task of projectDataJSON.tasks) {
                     if (task?.dueDate) {
