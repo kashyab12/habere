@@ -23,16 +23,15 @@ async function TaskPriorities() {
     const inferObj = await cachedInference(todaysTasks)
     const inferResp = JSON.parse(inferObj.choices?.[0]?.message?.content ?? "{}")
     if (!inferResp?.['prioritizedTaskList']) {
-      console.log("waduhek")
       return (
-        <div>waduhek</div>
+        <div>: something went wrong :</div>
       )
     } else {
       console.log(inferResp)
       const modelOutput = inferResp?.['prioritizedTaskList'] as DisplayTask[]
       console.log(modelOutput)
       return (
-        < Table >
+        < Table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400" >
           <TableCaption>Today's tasks!</TableCaption>
           <TableHeader>
             <TableRow>
@@ -49,7 +48,7 @@ async function TaskPriorities() {
                   <TableCell className="font-semibold">{task.priority}</TableCell>
                   <TableCell>{task.taskTitle}</TableCell>
                   <TableCell>{task.why}</TableCell>
-                  <TableCell>{task.expectedTimeToFinish}</TableCell>
+                  <TableCell>{`${task.expectedTimeToFinish} minutes`}</TableCell>
                 </TableRow>
               )
             })}
