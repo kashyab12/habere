@@ -8,17 +8,31 @@ export const taskModel = new OpenAI({
 const seedValue = 92
 const systemPrompt = "You are time management coach with tons of experience with helping people prioritize their daily tasks. You output only JSON!"
 
-export default async function inferPriAndRe(taskList: Task[]) {
-    const userPrompt = `Please provide the priorities for the tasks within this task list: "${taskList}". Provide the output format as:
-    {
-        taskTitle: "title as string",
-        priority: 1 as a number type,
-        why: "why did you provide this priority value? as a string",
-        expectedTimeToFinish: 1 as a number type, encoding the number of minutes required to finish this task
+
+export interface DisplayTask {
+    taskTitle: string // this should be the same value as the input task title
+    priority: string // this should be the priority. You need to provide this value for the task (from 0 to n where n is the total number of input tasks)
+    why: string // this should be the reason why you provided the priority for the task
+    expectedTimeToFinish: string // the is the amount of time (in minutes) you expect to finish the task
+}
+
+
+async function inferPriAndRe(taskList: Task[]) {
+    const userPrompt = `Please provide the priorities for the tasks within this task list: "${JSON.stringify(taskList)}". Please provide output as a ModelOutput type, it has been described below using a typescript interface:
+    
+    export type ModelOutput = {
+        prioritizedTaskList: Task[] 
     }
-    The priority must be a number from 1 to n where n is the total number of tasks within the list. A priority of 1 equates to the highest 
-    priority task. The 'why' key should be a brief explanation as to why you have set the respective priority of the task in comparison to the 
-    other tasks on the list. Finally, expectedTimeToFinish encodes the time in minutes you gauge it will take to complete the task.
+    
+    export interface Task {
+        taskTitle: string // this should be the same value as the input task title
+        priority: string // this should be the priority. You need to provide this value for the task (from 1 to n where n is the total number of input tasks)
+        why: string // this should be the reason why you provided the priority for the task
+        expectedTimeToFinish: string // the is the amount of time (in minutes) you expect to finish the task
+    }
+
+    Please make sure the taskTitle attribute within the Task interface has the same value as the "title" attribute in the input task list. Also, the smaller the number for the priority 
+    the more important the task is to complete. Please return the prioritizedTaskList in ascending order of priority.
     `
     const completion = taskModel.chat.completions.create({
         messages: [
@@ -40,3 +54,5 @@ export default async function inferPriAndRe(taskList: Task[]) {
     })
     return completion
 }
+
+export const cachedInference = cache(inferPriAndRe)

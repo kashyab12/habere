@@ -10,15 +10,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import inferPriAndRe from "@/lib/model";
+import { cachedInference, DisplayTask } from "@/lib/model";
 
-interface DisplayTask {
-  title: string
-  desc: string
-  status: number
-  priority: number
-  why: string
-}
 
 async function TaskPriorities() {
   const authHeader = headers().get("Authorization")
@@ -27,35 +20,44 @@ async function TaskPriorities() {
   } else {
     const todaysTasks = await getTodaysTasks(authHeader)
     console.log(todaysTasks)
-    const inferObj = await inferPriAndRe(todaysTasks)
-    const inferResp = inferObj.choices?.[0]?.message?.content
-    console.log(inferResp)
-    return (
-      < Table >
-        <TableCaption>Today's tasks!</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[100px]">Priority</TableHead>
-            <TableHead>Title</TableHead>
-            <TableHead>Why</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {todaysTasks.map((task, index) => {
-            return (
-              <TableRow>
-                <TableCell className="font-semibold">{index}</TableCell>
-                <TableCell>{task.title}</TableCell>
-                <TableCell>Why not!</TableCell>
-              </TableRow>
-            )
-          })}
-        </TableBody>
-      </Table >
-    )
+    const inferObj = await cachedInference(todaysTasks)
+    const inferResp = JSON.parse(inferObj.choices?.[0]?.message?.content ?? "{}")
+    if (!inferResp?.['prioritizedTaskList']) {
+      console.log("waduhek")
+      return (
+        <div>waduhek</div>
+      )
+    } else {
+      console.log(inferResp)
+      const modelOutput = inferResp?.['prioritizedTaskList'] as DisplayTask[]
+      console.log(modelOutput)
+      return (
+        < Table >
+          <TableCaption>Today's tasks!</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[100px]">Priority</TableHead>
+              <TableHead>Title</TableHead>
+              <TableHead>Why</TableHead>
+              <TableHead>Time to finish</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {modelOutput.map((task, index) => {
+              return (
+                <TableRow key={index}>
+                  <TableCell className="font-semibold">{task.priority}</TableCell>
+                  <TableCell>{task.taskTitle}</TableCell>
+                  <TableCell>{task.why}</TableCell>
+                  <TableCell>{task.expectedTimeToFinish}</TableCell>
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table >
+      )
+    }
   }
 }
-
-{/*  */ }
 
 export default TaskPriorities
