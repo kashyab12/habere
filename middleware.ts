@@ -19,7 +19,7 @@ export const config = {
 export async function middleware(request: NextRequest) {
     const session = await getIronSession<HabereSessionData>(cookies(), habereSessionOption)
     if ((!session.isLoggedIn || !session.accessToken)) {
-        if (request.nextUrl.pathname != "/") {
+        if (request.nextUrl.pathname == "/") {
             return NextResponse.next()
         } else {
             // Navigate to the sign in page basically
