@@ -31,8 +31,8 @@ async function TaskPriorities() {
       const modelOutput = inferResp?.['prioritizedTaskList'] as DisplayTask[]
       console.log(modelOutput)
       return (
-        < Table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400" >
-          <TableCaption>Today's tasks!</TableCaption>
+        < Table >
+          <TableCaption>Today&apos;s tasks!</TableCaption>
           <TableHeader>
             <TableRow>
               <TableHead className="w-[100px]">Priority</TableHead>

@@ -8,7 +8,9 @@ async function Home() {
   const authHeader = headers().get("Authorization")  
   if (!authHeader) {
     return (
-      <Dashboard children={<SignInContent />} />
+      <Dashboard>
+        <SignInContent/>
+      </Dashboard>
     );
   } else {
     redirect("/prioritize")
