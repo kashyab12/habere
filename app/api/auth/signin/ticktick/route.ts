@@ -10,7 +10,10 @@ export async function GET(req: NextRequest) {
         scopes: ["tasks:write", "tasks:read"]
     })
     const response = NextResponse.redirect(url, {
-        'status': 302
+        'status': 302,
+        'headers': {
+            'cache-control': 'no-cache'
+        }
     })
     // Session cookie or nah?
     response.cookies.set("ticktick-oauth-state", state)
