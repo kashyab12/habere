@@ -1,3 +1,4 @@
+import { cache } from "react"
 
 const ttApiBase = "https://api.ticktick.com"
 const TickTickAPI = {
@@ -75,9 +76,9 @@ async function getTodaysTasksReq(projectID: string, authHeader: string) {
 }
 
 
-async function getTodaysTasks(authHeader: string): Promise<Task[]> {
+async function getPendingTasks(authHeader: string): Promise<Task[]> {
     try {
-        const todaysTasks: Task[] = []
+        const pendingTasks: Task[] = []
         const getUsersProjectsResp = await getProjectsReq(authHeader)
         const projectsJSON = await getUsersProjectsResp.json()
         if (getUsersProjectsResp.status != 200) {
@@ -89,20 +90,37 @@ async function getTodaysTasks(authHeader: string): Promise<Task[]> {
                 const projectDataResp = await getTodaysTasksReq(project.id, authHeader)
                 const projectDataJSON: ProjectData = await projectDataResp.json()
                 for (const task of projectDataJSON.tasks) {
-                    if (task?.dueDate) {
-                        const taskDueDate = new Date(task.dueDate)
-                        if (isToday(taskDueDate)) {
-                            todaysTasks.push(task)
-                        }
+                    if (task?.status == 0) {
+                        pendingTasks.push(task)
                     }
                 }
             }
-            return todaysTasks
+            return pendingTasks
         }
     } catch (fetchProjectsErr) {
         throw fetchProjectsErr
     }
 }
+
+export const getTodaysTask = cache((pendingTasks: Task[], today: Date): Task[] => {
+    const todaysTasks: Task[] = []
+    for (const task of pendingTasks) {
+        if (task?.dueDate) {
+            let tz: string = ""
+            for(const elem of today.toString().split(" ")) {
+                if (elem.startsWith("GMT")) {
+                    tz = elem
+                    break
+                }
+            } 
+            const dueDate = new Date(`${task.dueDate.split("+")[0]}${tz.replace("GMT", "")}`)
+            if (isToday(dueDate) || task.title.startsWith("Drivers")) {
+                todaysTasks.push(task)
+            }
+        }
+    }
+    return todaysTasks
+})
 
 const isToday = (someDate: Date) => {
     const today = new Date()
@@ -111,4 +129,4 @@ const isToday = (someDate: Date) => {
         someDate.getFullYear() == today.getFullYear()
 }
 
-export default getTodaysTasks
+export default getPendingTasks
