@@ -1,0 +1,8 @@
+habere app
+---
+
+- Figure out why the inference keeps causing a re-render (I think because the model is returning diff vals. Need to make it such that if the tasks call returns a val i.e. if there's a new input, only then send send for inference again.) (!)
+
+- Fix favicon (hi)
+
+- Prettier component to display maybe? Or make the table comp prettier. (med)
