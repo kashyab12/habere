@@ -1,16 +1,9 @@
-import getTodaysTasks from "@/lib/tasks";
+import getPendingTasks from "@/lib/tasks";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+
 import { cachedInference, DisplayTask } from "@/lib/model";
+import TaskTable from "@/components/ui/task-table";
 
 
 async function TaskPriorities() {
@@ -18,44 +11,10 @@ async function TaskPriorities() {
   if (!authHeader) {
     redirect("/")
   } else {
-    const todaysTasks = await getTodaysTasks(authHeader)
-    console.log(todaysTasks)
-    const inferObj = await cachedInference(todaysTasks)
-    const inferResp = JSON.parse(inferObj.choices?.[0]?.message?.content ?? "{}")
-    if (!inferResp?.['prioritizedTaskList']) {
-      return (
-        <div>: something went wrong :</div>
-      )
-    } else {
-      console.log(inferResp)
-      const modelOutput = inferResp?.['prioritizedTaskList'] as DisplayTask[]
-      console.log(modelOutput)
-      return (
-        < Table >
-          <TableCaption>Today&apos;s tasks!</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[100px]">Priority</TableHead>
-              <TableHead>Title</TableHead>
-              <TableHead>Why</TableHead>
-              <TableHead>Time to finish</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {modelOutput.map((task, index) => {
-              return (
-                <TableRow key={index}>
-                  <TableCell className="font-semibold">{task.priority}</TableCell>
-                  <TableCell>{task.taskTitle}</TableCell>
-                  <TableCell>{task.why}</TableCell>
-                  <TableCell>{`${task.expectedTimeToFinish} minutes`}</TableCell>
-                </TableRow>
-              )
-            })}
-          </TableBody>
-        </Table >
-      )
-    }
+    const pendingTasks = await getPendingTasks(authHeader)
+    return (
+      <TaskTable pendingTasks={pendingTasks}/>
+    )
   }
 }
 
