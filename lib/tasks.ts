@@ -103,21 +103,12 @@ async function getPendingTasks(authHeader: string): Promise<Task[]> {
     }
 }
 
-export const getTodaysTask = (pendingTasks: Task[], today: Date): Task[] => {
+export const getTodaysTask = (pendingTasks: Task[], tz: string): Task[] => {
     const todaysTasks: Task[] = []
-    console.log(`Passed time to the getTodaysTask is ${today}`)
-    let tz: string = ""
-    for(const elem of today.toString().split(" ")) {
-        if (elem.startsWith("GMT")) {
-            tz = elem
-            break
-        }
-    } 
-    console.log(`The client timezone is ${tz}`)
-    tz = tz.replace("GMT", "")
+    console.log(`Passed timezone to getTodaysTask is ${tz}`)
     for (const task of pendingTasks) {
         if (task?.dueDate) {
-            const dueDate = new Date(`${task.dueDate.split("+")[0]}${tz.replace("GMT", "")}`)
+            const dueDate = new Date(`${task.dueDate.split("+")[0]}${tz}`)
             if (isToday(dueDate) || task.title.startsWith("Drivers")) {
                 console.log(`OG due date: ${task.dueDate}, and new due date: ${dueDate}`)
                 todaysTasks.push(task)
