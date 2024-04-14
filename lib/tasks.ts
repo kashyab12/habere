@@ -105,6 +105,7 @@ async function getPendingTasks(authHeader: string): Promise<Task[]> {
 
 export const getTodaysTask = (pendingTasks: Task[], today: Date): Task[] => {
     const todaysTasks: Task[] = []
+    console.log(`Passed time to the getTodaysTask is ${today}`)
     let tz: string = ""
     for(const elem of today.toString().split(" ")) {
         if (elem.startsWith("GMT")) {
