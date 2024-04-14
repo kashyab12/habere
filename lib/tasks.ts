@@ -86,6 +86,7 @@ async function getPendingTasks(authHeader: string): Promise<Task[]> {
         } else {
             // For each project obtain the tasks
             for (const project of projectsJSON as Project[]) {
+                console.log(project)
                 // Get specific project data
                 const projectDataResp = await getTodaysTasksReq(project.id, authHeader)
                 const projectDataJSON: ProjectData = await projectDataResp.json()
@@ -104,15 +105,17 @@ async function getPendingTasks(authHeader: string): Promise<Task[]> {
 
 export const getTodaysTask = cache((pendingTasks: Task[], today: Date): Task[] => {
     const todaysTasks: Task[] = []
+    let tz: string = ""
+    for(const elem of today.toString().split(" ")) {
+        if (elem.startsWith("GMT")) {
+            tz = elem
+            break
+        }
+    } 
+    console.log(`The client timezone is ${tz}`)
+    tz = tz.replace("GMT", "")
     for (const task of pendingTasks) {
         if (task?.dueDate) {
-            let tz: string = ""
-            for(const elem of today.toString().split(" ")) {
-                if (elem.startsWith("GMT")) {
-                    tz = elem
-                    break
-                }
-            } 
             const dueDate = new Date(`${task.dueDate.split("+")[0]}${tz.replace("GMT", "")}`)
             if (isToday(dueDate) || task.title.startsWith("Drivers")) {
                 todaysTasks.push(task)

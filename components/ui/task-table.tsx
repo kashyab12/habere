@@ -17,6 +17,7 @@ export default function TaskTable({ pendingTasks }: { pendingTasks: Task[] }) {
   const [modelOutput, setModelOutput] = useState<DisplayTask[]>([])
   useEffect(() => {
     const today = new Date()
+    console.log(today)
     const updateModelOutput = async () => {
       const modelOutput = await getModelOutput(pendingTasks, today)
       setModelOutput(modelOutput)
