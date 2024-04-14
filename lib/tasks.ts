@@ -118,6 +118,7 @@ export const getTodaysTask = cache((pendingTasks: Task[], today: Date): Task[] =
         if (task?.dueDate) {
             const dueDate = new Date(`${task.dueDate.split("+")[0]}${tz.replace("GMT", "")}`)
             if (isToday(dueDate) || task.title.startsWith("Drivers")) {
+                console.log(`OG due date: ${task.dueDate}, and new due date: ${dueDate}`)
                 todaysTasks.push(task)
             }
         }
