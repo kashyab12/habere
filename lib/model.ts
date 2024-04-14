@@ -55,4 +55,4 @@ async function inferPriAndRe(taskList: Task[]) {
     return completion
 }
 
-export const cachedInference = cache(inferPriAndRe)
+export default inferPriAndRe

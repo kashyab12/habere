@@ -103,7 +103,7 @@ async function getPendingTasks(authHeader: string): Promise<Task[]> {
     }
 }
 
-export const getTodaysTask = cache((pendingTasks: Task[], today: Date): Task[] => {
+export const getTodaysTask = (pendingTasks: Task[], today: Date): Task[] => {
     const todaysTasks: Task[] = []
     let tz: string = ""
     for(const elem of today.toString().split(" ")) {
@@ -124,7 +124,7 @@ export const getTodaysTask = cache((pendingTasks: Task[], today: Date): Task[] =
         }
     }
     return todaysTasks
-})
+}
 
 const isToday = (someDate: Date) => {
     const today = new Date()

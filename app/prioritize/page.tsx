@@ -1,8 +1,6 @@
 import getPendingTasks from "@/lib/tasks";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-
-import { cachedInference, DisplayTask } from "@/lib/model";
 import TaskTable from "@/components/ui/task-table";
 
 

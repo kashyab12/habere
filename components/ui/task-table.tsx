@@ -16,9 +16,9 @@ import { useEffect, useState } from "react"
 export default function TaskTable({ pendingTasks }: { pendingTasks: Task[] }) {
   const [modelOutput, setModelOutput] = useState<DisplayTask[]>([])
   useEffect(() => {
-    const today = new Date()
-    console.log(`The time on the client is : ${today}`)
     const updateModelOutput = async () => {
+      const today = new Date()
+      console.log(`The time on the client is : ${today}`)
       const modelOutput = await getModelOutput(pendingTasks, today)
       setModelOutput(modelOutput)
     }
