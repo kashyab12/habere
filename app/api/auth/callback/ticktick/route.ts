@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
             status: 401
         })
     }
-    const storedState = req.cookies.get("ticktick-oauth-state")?.value
+    const storedState = cookies().get("tt-oauth-state")?.value
     if (!storedState || storedState != state) {
         console.log("that's not good lol")
         return NextResponse.json({

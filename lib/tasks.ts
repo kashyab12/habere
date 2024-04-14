@@ -109,9 +109,10 @@ export const getTodaysTask = (pendingTasks: Task[], tz: string): Task[] => {
     for (const task of pendingTasks) {
         if (task?.dueDate) {
             const dueDate = new Date(`${task.dueDate.split("+")[0]}${tz}`)
-            if (isToday(dueDate) || task.title.startsWith("Drivers")) {
+            if (isToday(dueDate)) {
                 console.log(`OG due date: ${task.dueDate}, and new due date: ${dueDate}`)
                 todaysTasks.push(task)
+                console.log(`Adding ${JSON.stringify(task)} to today's task`)
             }
         }
     }

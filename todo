@@ -6,3 +6,5 @@ habere app
 - Fix favicon (hi)
 
 - Prettier component to display maybe? Or make the table comp prettier. (med)
+
+- Currently we make an assumption that all tasks are due at the time of the client's timezone, however ticktick encodes the timeZone within the task struct. We can utilize this info which maybe useful in scenarios where people have multi timezone deadlines.
