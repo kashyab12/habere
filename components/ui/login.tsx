@@ -1,9 +1,5 @@
 import Image from "next/image"
-import Link from "next/link"
-
-import { Button } from "@/components/ui/button"
 import haberePic from '@/public/habere.jpeg'
-import SignInButton from "@/components/ui/signin-button";
 
 export function Dashboard({ children }: {children: JSX.Element}) {
     return (

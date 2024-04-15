@@ -57,7 +57,7 @@ async function getProjectsReq(authHeader: string) {
             "Authorization": authHeader
         },
         next: {
-            revalidate: 3600
+            revalidate: 120
         }
     })
     return getUsersProjectsResp
@@ -69,7 +69,7 @@ async function getTodaysTasksReq(projectID: string, authHeader: string) {
             "Authorization": authHeader
         },
         next: {
-            revalidate: 3600
+            revalidate: 120
         }
     })
     return projectDataResp

@@ -11,7 +11,7 @@ async function TaskPriorities() {
   } else {
     const pendingTasks = await getPendingTasks(authHeader)
     return (
-      <TaskTable pendingTasks={pendingTasks}/>
+      <TaskTable pendingTasks={pendingTasks} />
     )
   }
 }
