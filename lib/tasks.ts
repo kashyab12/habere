@@ -109,14 +109,16 @@ async function getPendingTasks(authHeader: string): Promise<Task[]> {
     }
 }
 
-export const getTodaysTask = (pendingTasks: Task[], tzOff: string, tz: string): Task[] => {
+export const getTodaysTask = (pendingTasks: Task[], tzName: string): Task[] => {
     const todaysTasks: Task[] = []
-    console.log(`Passed timezone to getTodaysTask is ${tzOff}`)
+    console.log(`Passed timezone to getTodaysTask is ${tzName}`)
     for (const task of pendingTasks) {
         if (task?.dueDate) {
-            const dueDate = new Date(`${task.dueDate.split("+")[0]}${tzOff}`)
-            if (isToday(dueDate, tz)) {
-                console.log(`OG due date: ${task.dueDate}, and new due date: ${dueDate}`)
+            const dueDate = DateTime.fromISO(task.dueDate.split("+")[0]).setZone(tzName, {
+                keepLocalTime: true
+            })
+            if (isToday(dueDate, tzName)) {
+                console.log(`OG due date: ${task.dueDate}, and new due date with adjusted TZ: ${dueDate.toString()}`)
                 todaysTasks.push(task)
                 console.log(`Adding ${JSON.stringify(task)} to today's task`)
             }
@@ -125,12 +127,10 @@ export const getTodaysTask = (pendingTasks: Task[], tzOff: string, tz: string): 
     return todaysTasks
 }
 
-const isToday = (someDate: Date, tzInfo: string) => {
-    const today = DateTime.now().setZone(tzInfo).toJSDate()
-    console.log(`Within isToday: ${today}`)
-    return someDate.getDate() == today.getDate() &&
-        someDate.getMonth() == today.getMonth() &&
-        someDate.getFullYear() == today.getFullYear()
+const isToday = (dueDate: DateTime, tzInfo: string) => {
+    const today = DateTime.now().setZone(tzInfo)
+    console.log(`Within isToday: today for client: ${today} and due date: ${dueDate.toString()}`)
+    return dueDate.hasSame(today, "day")
 }
 
 export default getPendingTasks

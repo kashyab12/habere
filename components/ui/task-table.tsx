@@ -17,18 +17,9 @@ export default function TaskTable({ pendingTasks }: { pendingTasks: Task[] }) {
   const [modelOutput, setModelOutput] = useState<DisplayTask[]>([])
   useEffect(() => {
     const updateModelOutput = async () => {
-      const today = new Date()
-      let tzOff: string = ""
-      for(const elem of today.toString().split(" ")) {
-          if (elem.startsWith("GMT")) {
-              tzOff = elem
-              break
-          }
-      } 
-      tzOff = tzOff.replace("GMT", "")
-      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
-      console.log(`The time on the client is : ${today} and the timezone is: ${tzOff} and ${tz}`)
-      const modelOutput = await getModelOutput(pendingTasks, tzOff, tz)
+      const clientTzName = Intl.DateTimeFormat().resolvedOptions().timeZone
+      console.log(`The client timezone is: ${clientTzName}`)
+      const modelOutput = await getModelOutput(pendingTasks, clientTzName)
       setModelOutput(modelOutput)
     }
     updateModelOutput()
