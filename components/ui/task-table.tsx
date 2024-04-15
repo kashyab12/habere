@@ -18,16 +18,17 @@ export default function TaskTable({ pendingTasks }: { pendingTasks: Task[] }) {
   useEffect(() => {
     const updateModelOutput = async () => {
       const today = new Date()
-      let tz: string = ""
+      let tzOff: string = ""
       for(const elem of today.toString().split(" ")) {
           if (elem.startsWith("GMT")) {
-              tz = elem
+              tzOff = elem
               break
           }
       } 
-      tz = tz.replace("GMT", "")
-      console.log(`The time on the client is : ${today} and the timezone is: ${tz}`)
-      const modelOutput = await getModelOutput(pendingTasks, tz)
+      tzOff = tzOff.replace("GMT", "")
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
+      console.log(`The time on the client is : ${today} and the timezone is: ${tzOff} and ${tz}`)
+      const modelOutput = await getModelOutput(pendingTasks, tzOff, tz)
       setModelOutput(modelOutput)
     }
     updateModelOutput()

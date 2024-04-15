@@ -1,4 +1,4 @@
-import { cache } from "react"
+import { DateTime } from "luxon"
 
 const ttApiBase = "https://api.ticktick.com"
 const TickTickAPI = {
@@ -55,7 +55,7 @@ async function getProjectsReq(authHeader: string) {
     const getUsersProjectsResp = fetch(TickTickAPI.getAllProjects, {
         headers: {
             "Authorization": authHeader
-        }, 
+        },
         next: {
             revalidate: 3600
         }
@@ -91,8 +91,14 @@ async function getPendingTasks(authHeader: string): Promise<Task[]> {
                 const projectDataResp = await getTodaysTasksReq(project.id, authHeader)
                 const projectDataJSON: ProjectData = await projectDataResp.json()
                 for (const task of projectDataJSON.tasks) {
+                    if (task.title.toLowerCase().includes("driver")) {
+                        console.log(JSON.stringify(task))
+                    }
                     if (task?.status == 0) {
                         pendingTasks.push(task)
+                        if (task.title.toLowerCase().includes("driver")) {
+                            console.log("made it in pendingTasks lol")
+                        }
                     }
                 }
             }
@@ -103,13 +109,13 @@ async function getPendingTasks(authHeader: string): Promise<Task[]> {
     }
 }
 
-export const getTodaysTask = (pendingTasks: Task[], tz: string): Task[] => {
+export const getTodaysTask = (pendingTasks: Task[], tzOff: string, tz: string): Task[] => {
     const todaysTasks: Task[] = []
-    console.log(`Passed timezone to getTodaysTask is ${tz}`)
+    console.log(`Passed timezone to getTodaysTask is ${tzOff}`)
     for (const task of pendingTasks) {
         if (task?.dueDate) {
-            const dueDate = new Date(`${task.dueDate.split("+")[0]}${tz}`)
-            if (isToday(dueDate)) {
+            const dueDate = new Date(`${task.dueDate.split("+")[0]}${tzOff}`)
+            if (isToday(dueDate, tz)) {
                 console.log(`OG due date: ${task.dueDate}, and new due date: ${dueDate}`)
                 todaysTasks.push(task)
                 console.log(`Adding ${JSON.stringify(task)} to today's task`)
@@ -119,8 +125,9 @@ export const getTodaysTask = (pendingTasks: Task[], tz: string): Task[] => {
     return todaysTasks
 }
 
-const isToday = (someDate: Date) => {
-    const today = new Date()
+const isToday = (someDate: Date, tzInfo: string) => {
+    const today = DateTime.now().setZone(tzInfo).toJSDate()
+    console.log(`Within isToday: ${today}`)
     return someDate.getDate() == today.getDate() &&
         someDate.getMonth() == today.getMonth() &&
         someDate.getFullYear() == today.getFullYear()
