@@ -1,8 +1,7 @@
 'use client';
-import { getModelOutput } from "@/app/actions"
 import { DisplayTask } from "@/lib/model"
 import { Task } from "@/lib/tasks"
-import { useEffect, useState, useTransition } from "react"
+import { useEffect, useState} from "react"
 import DataTable from "./data-table";
 import { Suspense } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -16,10 +15,27 @@ export default function TaskTable({ pendingTasks }: {
     const updateModelOutput = async () => {
       const clientTzName = Intl.DateTimeFormat().resolvedOptions().timeZone
       console.log(`The client timezone is: ${clientTzName}`)
-      const modelOutput = await getModelOutput(pendingTasks, clientTzName)
-      setModelOutput(modelOutput)
+      try {
+        const modelResp = await fetch("/api/prioritize/tasks", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            pendingTasks,
+            clientTzName
+          })
+        })
+        const modelOutputJSON = await modelResp.json()
+        if (modelResp.status != 200) {
+          console.log(`Facing issues: ${modelOutputJSON?.error}`)
+        } else {
+          setModelOutput(modelOutputJSON as DisplayTask[])
+        }
+      } catch (error) {
+        console.log(error)
+      }
     }
-
     updateModelOutput()
   }, [pendingTasks])
 

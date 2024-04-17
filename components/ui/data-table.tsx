@@ -23,7 +23,7 @@ export default function DataTable({ modelOutput }: { modelOutput: DisplayTask[] 
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {modelOutput.map((task, index) => {
+                {modelOutput.length > 0 && modelOutput.map((task, index) => {
                     return (
                         <TableRow key={index}>
                             <TableCell className="font-semibold">{task.priority}</TableCell>

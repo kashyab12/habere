@@ -8,3 +8,5 @@ habere app
 - Currently we make an assumption that all tasks are due at the time of the client's timezone, however ticktick encodes the timeZone within the task struct. We can utilize this info which maybe useful in scenarios where people have multi timezone deadlines.
 
 - implement dark mode stuff later
+
+- set an expiration for the session cookie (max age)
