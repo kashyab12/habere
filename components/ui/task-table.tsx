@@ -46,22 +46,20 @@ export default function TaskTable({ pendingTasks }: {
     updateModelOutput()
   }, [pendingTasks])
 
-  if (modelOutput.length < 1) {
-    return null
-  } else {
-    return (
-      < Table >
-        <TableCaption>Today&apos;s tasks!</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[100px]">Priority</TableHead>
-            <TableHead>Title</TableHead>
-            <TableHead>Why</TableHead>
-            <TableHead>Time to finish</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {modelOutput.map((task, index) => {
+  return (
+    < Table >
+      <TableCaption>Today&apos;s tasks!</TableCaption>
+      <TableHeader>
+        <TableRow>
+          <TableHead className="w-[100px]">Priority</TableHead>
+          <TableHead>Title</TableHead>
+          <TableHead>Why</TableHead>
+          <TableHead>Time to finish</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {modelOutput.length > 0 &&
+          modelOutput.map((task, index) => {
             console.log("Reached")
             return (
               <TableRow key={index}>
@@ -72,10 +70,8 @@ export default function TaskTable({ pendingTasks }: {
               </TableRow>
             )
           })}
-        </TableBody>
-      </Table >
-    )
-  }
+      </TableBody>
+    </Table >
+  )
 
-  
 }
