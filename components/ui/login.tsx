@@ -12,6 +12,7 @@ export function Dashboard({ children }: {children: JSX.Element}) {
                     src={haberePic}
                     alt="Prioritize the important things in life"
                     className="h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+                    priority={true}
                 />
             </div>
         </div>
