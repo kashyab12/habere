@@ -4,7 +4,7 @@ import { Task, getTodaysTask } from "@/lib/tasks";
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from 'next/headers'
 
-export async function getModelOutput(pendingTasks: Task[], tzName: string): Promise<DisplayTask[]> {
+async function getModelOutput(pendingTasks: Task[], tzName: string): Promise<DisplayTask[]> {
     console.log(`Passed timezone to the server is ${tzName}`)
     const todaysTasks = getTodaysTask(pendingTasks, tzName)
     const inferObj = await inferPriAndRe(todaysTasks)
