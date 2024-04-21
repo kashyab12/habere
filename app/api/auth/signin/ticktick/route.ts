@@ -12,6 +12,10 @@ export async function GET(req: NextRequest) {
     const response = NextResponse.redirect(url, {
         'status': 302
     })
-    cookies().set('tt-oauth-state', state)
+    cookies().set('tt-oauth-state', state, {
+        secure: process.env.NODE_ENV! === 'production',
+        httpOnly: true, 
+        path: '/api'
+    })
     return response
 }

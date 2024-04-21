@@ -14,6 +14,7 @@ export const habereSessionOption: SessionOptions = {
     password: process.env.SESSION_SECRET!,
     cookieOptions: {
         httpOnly: true,
-        secure: process.env.NODE_ENV! === "production"
+        secure: process.env.NODE_ENV! === "production",
+        ttl: 1800 // 30 mins
     }
 }
