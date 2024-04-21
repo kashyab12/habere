@@ -86,19 +86,13 @@ async function getPendingTasks(authHeader: string): Promise<Task[]> {
         } else {
             // For each project obtain the tasks
             for (const project of projectsJSON as Project[]) {
-                console.log(project)
+                console.log("Iterating through project")
                 // Get specific project data
                 const projectDataResp = await getTodaysTasksReq(project.id, authHeader)
                 const projectDataJSON: ProjectData = await projectDataResp.json()
                 for (const task of projectDataJSON.tasks) {
-                    if (task.title.toLowerCase().includes("driver")) {
-                        console.log(JSON.stringify(task))
-                    }
                     if (task?.status == 0) {
                         pendingTasks.push(task)
-                        if (task.title.toLowerCase().includes("driver")) {
-                            console.log("made it in pendingTasks lol")
-                        }
                     }
                 }
             }
@@ -120,7 +114,6 @@ export const getTodaysTask = (pendingTasks: Task[], tzName: string): Task[] => {
             if (isToday(dueDate, tzName)) {
                 console.log(`OG due date: ${task.dueDate}, and new due date with adjusted TZ: ${dueDate.toString()}`)
                 todaysTasks.push(task)
-                console.log(`Adding ${JSON.stringify(task)} to today's task`)
             }
         }
     }

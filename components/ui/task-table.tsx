@@ -19,7 +19,6 @@ export default function TaskTable({ pendingTasks }: {
   useEffect(() => {
     const updateModelOutput = async () => {
       const clientTzName = Intl.DateTimeFormat().resolvedOptions().timeZone
-      console.log(`The client timezone is: ${clientTzName}`)
       try {
         const modelResp = await fetch("/api/prioritize/tasks", {
           method: "POST",
@@ -60,7 +59,6 @@ export default function TaskTable({ pendingTasks }: {
       <TableBody>
         {modelOutput.length > 0 &&
           modelOutput.map((task, index) => {
-            console.log("Reached")
             return (
               <TableRow key={index}>
                 <TableCell className="font-semibold">{task.priority}</TableCell>
