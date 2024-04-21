@@ -54,7 +54,7 @@ export default function TaskTable({ pendingTasks }: {
           <TableHead className="w-[100px]">Priority</TableHead>
           <TableHead>Title</TableHead>
           <TableHead>Why</TableHead>
-          <TableHead>Time to finish</TableHead>
+          <TableHead>Time to finish (mins)</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -66,7 +66,7 @@ export default function TaskTable({ pendingTasks }: {
                 <TableCell className="font-semibold">{task.priority}</TableCell>
                 <TableCell>{task.taskTitle}</TableCell>
                 <TableCell>{task.why}</TableCell>
-                <TableCell>{`${task.expectedTimeToFinish} minutes`}</TableCell>
+                <TableCell>{task.expectedTimeToFinish}</TableCell>
               </TableRow>
             )
           })}
