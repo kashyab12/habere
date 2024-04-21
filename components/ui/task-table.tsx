@@ -1,11 +1,16 @@
 'use client';
 import { DisplayTask } from "@/lib/model"
 import { Task } from "@/lib/tasks"
-import { useEffect, useState} from "react"
-import DataTable from "./data-table";
-import { Suspense } from "react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { LucideCheckCircle } from "lucide-react"
+import { useEffect, useState } from "react"
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
 export default function TaskTable({ pendingTasks }: {
   pendingTasks: Task[]
@@ -30,7 +35,9 @@ export default function TaskTable({ pendingTasks }: {
         if (modelResp.status != 200) {
           console.log(`Facing issues: ${modelOutputJSON?.error}`)
         } else {
-          setModelOutput(modelOutputJSON as DisplayTask[])
+          if (modelOutputJSON?.modelOutput) {
+            setModelOutput(modelOutputJSON.modelOutput as DisplayTask[])
+          }
         }
       } catch (error) {
         console.log(error)
@@ -39,17 +46,36 @@ export default function TaskTable({ pendingTasks }: {
     updateModelOutput()
   }, [pendingTasks])
 
-  return (
-    <Suspense fallback= {
-      <Alert>
-      <LucideCheckCircle className="h-4 w-4" />
-      <AlertTitle>Building Priority List</AlertTitle>
-      <AlertDescription>
-        Prioritizing today&apos;s tasks and providing an approximate time to finish.
-      </AlertDescription>
-    </Alert>
-    }>
-    <DataTable modelOutput={modelOutput} />
-    </Suspense>
-  )
+  if (modelOutput.length < 1) {
+    return null
+  } else {
+    return (
+      < Table >
+        <TableCaption>Today&apos;s tasks!</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[100px]">Priority</TableHead>
+            <TableHead>Title</TableHead>
+            <TableHead>Why</TableHead>
+            <TableHead>Time to finish</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {modelOutput.map((task, index) => {
+            console.log("Reached")
+            return (
+              <TableRow key={index}>
+                <TableCell className="font-semibold">{task.priority}</TableCell>
+                <TableCell>{task.taskTitle}</TableCell>
+                <TableCell>{task.why}</TableCell>
+                <TableCell>{`${task.expectedTimeToFinish} minutes`}</TableCell>
+              </TableRow>
+            )
+          })}
+        </TableBody>
+      </Table >
+    )
+  }
+
+  
 }
