@@ -48,7 +48,7 @@ export interface ChecklistItem {
 
 interface ProjectData {
     project: Project
-    tasks: Task[]
+    tasks?: Task[]
 }
 
 async function getProjectsReq(authHeader: string) {
@@ -90,6 +90,7 @@ async function getPendingTasks(authHeader: string): Promise<Task[]> {
                 // Get specific project data
                 const projectDataResp = await getTodaysTasksReq(project.id, authHeader)
                 const projectDataJSON: ProjectData = await projectDataResp.json()
+                if (projectDataJSON.tasks === undefined) continue
                 for (const task of projectDataJSON.tasks) {
                     if (task?.status == 0) {
                         pendingTasks.push(task)
